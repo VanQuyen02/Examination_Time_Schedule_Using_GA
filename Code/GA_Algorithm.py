@@ -17,7 +17,7 @@ class GeneticAlgorithm:
 
     def selection(self, population):
         # Randomly select φ individuals from population and return the best individual based on fitness value among them
-        phi = 10
+        phi = 5
         selected_parents = np.random.choice(population, phi, replace=False)
         best_parent = min(selected_parents, key=lambda x: self.schedule.get_fitness(x))
         return best_parent
@@ -85,7 +85,7 @@ class GeneticAlgorithm:
         next_generation = []
 
         # Elitism: Keep the elite individuals
-        next_generation.extend(sorted(population, key=lambda x: self.schedule.get_fitness(x))[:(self.elite_rate*self.population_size)])
+        next_generation.extend(sorted(population, key=lambda x: self.schedule.get_fitness(x))[:int(self.elite_rate*self.population_size)])
 
         # Selection, Crossover, Mutation
         while len(next_generation) < self.population_size:

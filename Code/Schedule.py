@@ -239,15 +239,16 @@ class Schedule:
         subject_held_at_slot = self.create_subject_held_at_slot(chromosome)
         slot_start_of_subject = self.create_slot_start_of_subject(subject_held_at_slot)
         slot_start_of_student = np.zeros(
-            (self.data.number_of_students, self.data.number_of_invigilators)
+            (self.data.number_of_students, self.data.number_of_subjects)
         )
         for m in range(self.data.number_of_students):
             for s in range(self.data.number_of_subjects):
                 slot_start_of_student[m, s] = (
                     self.data.student_take_subject[m, s] * slot_start_of_subject[s]
                 )
-
+        
         sorted_slot_desc = np.sort(slot_start_of_student, axis=1)[:, ::-1]
+      
         payoff_value_student = 0
         for m in range(self.data.number_of_students):
             payoff_one_student = 0
@@ -260,6 +261,8 @@ class Schedule:
                         / self.data.number_subjects_of_each_student[m]
                     )
                 )
+            print(m,  self.data.number_of_total_slots
+                        / self.data.number_subjects_of_each_student[m])
             payoff_value_student += payoff_one_student
         return payoff_value_student
 
@@ -326,15 +329,14 @@ class Schedule:
         w3 = 1/3
         w4 = 1/3
         w5 = 1/3
-        if self.pass_all_constraints(chromosome):
-            fitness_value = (
-                w3 * self.cal_payoff_student(chromosome)
-                + w4 * self.cal_payoff_invigilator(chromosome)
-                + w5 * self.cal_payoff_p0(chromosome)
-            )
-        else:
-            fitness_value = 99999999999
-        
+        # if self.pass_all_constraints(chromosome):
+        fitness_value =  w3 * self.cal_payoff_student(chromosome) + w4 * self.cal_payoff_invigilator(chromosome)+ w5 * self.cal_payoff_p0(chromosome)
+        #     )
+        # else:
+        #     fitness_value = 99999999999
+        print(self.cal_payoff_student(chromosome))
+        print( self.cal_payoff_invigilator(chromosome))
+        print(self.cal_payoff_p0(chromosome))
         return fitness_value
 
     

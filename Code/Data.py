@@ -29,18 +29,19 @@ class Data:
         self.overlap_subject = None
     
     def load_data(self):
+        print("start load csv")
         root_path = "D:/Course_FPT/Term_9/Reiforcement Learning/Data"
         students = pd.read_csv(os.path.join(root_path,"Student.csv"))
         invigilators = pd.read_csv(os.path.join(root_path,"Invigilator.csv"))
         subjects = pd.read_csv(os.path.join(root_path,"Subject.csv"))
         student_take_subject = pd.read_csv(os.path.join(root_path,"Student_Subject.csv"))
         invigilator_can_supervise_subject = pd.read_csv(os.path.join(root_path,"SubjectInvigilator.csv"))
-
+        print("done load csv")
         self.number_of_students = students.shape[0]
         self.number_of_invigilators = invigilators.shape[0]
         self.number_of_subjects = subjects.shape[0]
         self.number_of_rooms = 100
-        self.number_of_examination_days = 14
+        self.number_of_examination_days = 7
         self.maximum_number_students_each_room = 22
         self.number_of_slots_per_day = 6
 
@@ -53,14 +54,12 @@ class Data:
         self.number_subjects_of_each_student = np.sum(self.student_take_subject, axis=1)
         self.number_students_of_each_subject = np.sum(self.student_take_subject, axis=0)
         self.number_rooms_of_each_subject = [None]*self.number_of_subjects
-        self.overlap_subject = self.create_overlap_subject()
+        # self.overlap_subject = self.create_overlap_subject()
         for s in range(self.number_of_subjects):
             self.number_rooms_of_each_subject[s] = int((self.number_students_of_each_subject[s]+self.maximum_number_students_each_room-1)/ self.maximum_number_students_each_room)
-
         self.list_students = [None]*self.number_of_students
         self.list_invigilators = [None]*self.number_of_invigilators
         self.list_subjects = [None]*self.number_of_subjects
-
         for i in range(0, self.number_of_students):
             student_id = students['Id'][i]
             roll_number = students['RollNumber'][i]
@@ -68,13 +67,11 @@ class Data:
             email = students["Email"][i]
             full_name = students['FullName'][i]
             self.list_students[i] = Student(student_id, roll_number, member_code, email, full_name)
-        
         for i in range(0, self.number_of_invigilators):
             invigilator_id = invigilators['Id'][i]
             code = invigilators['Code'][i]
             number_of_class = invigilators["NumberOfClass"][i]
             self.list_invigilators[i] = Invigilator(invigilator_id, code, number_of_class)
-        
         for i in range(0, self.number_of_subjects):
             subject_id = subjects['Id'][i]
             subject_code = subjects['SubCode'][i]
